@@ -1,0 +1,15 @@
+﻿This contains the entire game's dialogue... Please play the game as intended before looking at this, or you might spoil the experience!
+
+
+
+
+:: Test1
+[/PORT][V:sfx_Talk1][NAME:Kid]Hey,|||| hey!|||||| Did you know there's only one#sewage system in this town?|||||| It even goes [COL:c_red]#all the way up to the castle[/COL]!
+Isn't that [V:sfx_Talk2][SHAKE:1][i]super[/i] cool[/SHAKE]?!|||||||| [V:sfx_Talk1]I wanna#explore the sewers some day!
+[/V][COL:nar][PORT:BellSmirk][NAME:Bellanina](Well,|||| now [i]that's[/i] interesting.|||||| I wonder#where the entrance is.)[END]
+
+:: you_broke_it
+[/PORT][/V][NAME:Dev. Team][/COL][S:2]Congratulations!||||||||||||#You broke it!
+
+:: you_broke_it_2
+[/PORT][/V][NAME:Dev. Team][/COL][S:2]Congratulations!||||||||||||#You broke it!
