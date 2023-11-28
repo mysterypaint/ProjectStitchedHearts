@@ -2,8 +2,6 @@
 
 switch(state) {
 	case GameStates.INIT:
-		state = GameStates.GAMEPLAY;
-		window_size = 4;
 		window_set_size(win_width * window_size, win_height * window_size);
 		alarm[0] = 1;
 		
@@ -14,8 +12,14 @@ switch(state) {
 		lines_skipped = 0;//get_integer("Start reading .txt from line:", "");
 		load_text("game_text.txt", lines_skipped); // Stores all the game's text to Game.loaded_text, and all the line counts to Game.ltext_line_count as two separate ds_maps
 
-		room_goto(StartingBedroom);
-		cam_obj = instance_create_depth(0, 0, 1, Camera);
+		state = GameStates.ABOUT_SCREEN; //GameStates.GAMEPLAY;
+		break;
+	case GameStates.ABOUT_SCREEN:
+		if (pressed_key_confirm) {
+			state = GameStates.GAMEPLAY;
+			room_goto(SchoolPonBedroom);
+			cam_obj = instance_create_depth(0, 0, 1, Camera);
+		}
 		break;
 	case GameStates.GAMEPLAY:
 		break;
@@ -23,20 +27,10 @@ switch(state) {
 		break;
 }
 
-if (keyboard_check_pressed(ord("1"))) {
-	window_size = 1;
-	window_set_size(win_width * window_size, win_height * window_size);
-	alarm[0] = 1;
-} else if (keyboard_check_pressed(ord("2"))) {
-	window_size = 2;
-	window_set_size(win_width * window_size, win_height * window_size);
-	alarm[0] = 1;
-} else if (keyboard_check_pressed(ord("3"))) {
-	window_size = 3;
-	window_set_size(win_width * window_size, win_height * window_size);
-	alarm[0] = 1;
-} else if (keyboard_check_pressed(ord("4"))) {
-	window_size = 4;
+if (keyboard_check_pressed(vk_f7)) {
+	window_size++;
+	if (window_size > window_size_max)
+		window_size = 1;
 	window_set_size(win_width * window_size, win_height * window_size);
 	alarm[0] = 1;
 }
@@ -47,5 +41,11 @@ if ((keyboard_check_pressed(vk_enter) && keyboard_check(vk_alt)) || keyboard_che
 
 if (keyboard_check_pressed(vk_escape))
 	game_end();
+
+// Debug mode toggling, if applicable.
+if (debug_toggling) {
+	if (keyboard_check_pressed(ord("Q")))
+		debug = !debug;
+}
 
 ticks++;

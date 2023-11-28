@@ -5,3 +5,4 @@ holding_key_left = keyboard_check(Game.key_left) || keyboard_check(Game.key_left
 holding_key_right = keyboard_check(Game.key_right) || keyboard_check(Game.key_right_alt);
 holding_key_up = keyboard_check(Game.key_up) || keyboard_check(Game.key_up_alt);
 holding_key_down = keyboard_check(Game.key_down) || keyboard_check(Game.key_down_alt);
+holding_key_run = keyboard_check(Game.key_run) || keyboard_check(Game.key_run_alt);

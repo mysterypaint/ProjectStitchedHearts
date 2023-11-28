@@ -61,8 +61,7 @@ function load_text(argument0, argument1) {
 								curr_line = string_copy(curr_line, 1, string_length(curr_line));
 								curr_line = string_replace(curr_line, chr(13), "");				// Return
 								curr_line = string_replace(curr_line, chr(0), "");				// Null
-								curr_line = string_trim(curr_line, "both", chr(9));		// Tab Indent
-								curr_line = string_trim(curr_line, "both", chr(32));	// Space
+								curr_line = string_trim(curr_line);
 							}
 						
 							if (string_char_at(curr_line, 1) != "\r" && 

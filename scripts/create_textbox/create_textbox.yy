@@ -1,12 +1,11 @@
 {
-  "isDnD": false,
+  "resourceType": "GMScript",
+  "resourceVersion": "1.0",
+  "name": "create_textbox",
   "isCompatibility": false,
+  "isDnD": false,
   "parent": {
     "name": "Textbox",
     "path": "folders/Scripts/Textbox.yy",
   },
-  "resourceVersion": "1.0",
-  "name": "create_textbox",
-  "tags": [],
-  "resourceType": "GMScript",
 }

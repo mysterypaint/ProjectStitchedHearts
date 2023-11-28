@@ -4,9 +4,10 @@
 
 
 :: Test1
-[/PORT][V:sfx_Talk1][NAME:Kid]Hey,|||| hey!|||||| Did you know there's only one#sewage system in this town?|||||| It even goes [COL:c_red]#all the way up to the castle[/COL]!
-Isn't that [V:sfx_Talk2][SHAKE:1][i]super[/i] cool[/SHAKE]?!|||||||| [V:sfx_Talk1]I wanna#explore the sewers some day!
-[/V][COL:nar][PORT:BellSmirk][NAME:Bellanina](Well,|||| now [i]that's[/i] interesting.|||||| I wonder#where the entrance is.)[END]
+[/PORT][V:sfx_Talk1][NAME:Cocoa]Wake up,|||| [COL:c_green]Pon[/COL]!|||| Breakfast was ready#at least fifteen minutes ago![END]
+
+:: Test2
+[/PORT][V:sfx_Talk1][NAME:Cocoa]C'mon,|||| sleepyhead!|||| Let's get going already|||.|||.|||.||||||#We're going to be late meeting up#with [COL:c_red]the professor[/COL]![END]
 
 :: you_broke_it
 [/PORT][/V][NAME:Dev. Team][/COL][S:2]Congratulations!||||||||||||#You broke it!

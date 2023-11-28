@@ -10,7 +10,22 @@
                     "id": "16e1a9a5-0800-4715-820a-a06da85580a6",
                     "modelName": "GMTextureGroup",
                     "mvc": "1.0",
-                    "groupName": "Areas",
+                    "groupName": "AreaBedroom",
+                    "targets": 461609314234257646,
+                    "autocrop": true,
+                    "border": 2,
+                    "groupParent": "00000000-0000-0000-0000-000000000000",
+                    "mipsToGenerate": 0,
+                    "scaled": true
+                }
+            },
+            {
+                "Key": 2,
+                "Value": {
+                    "id": "daf0c62e-9939-48b2-8415-d50d84809bc7",
+                    "modelName": "GMTextureGroup",
+                    "mvc": "1.0",
+                    "groupName": "GlobalStuff",
                     "targets": 461609314234257646,
                     "autocrop": true,
                     "border": 2,

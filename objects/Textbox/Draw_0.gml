@@ -5,7 +5,6 @@ draw_rectangle(x, y + 135, x + 335, y + 195, false);
 draw_sprite(curr_port, curr_port_index, x + 7, y + 142);
 
 
-draw_set_font(Game.font);
 draw_set_color(c_white);
 	
 if (curr_loaded_line_count > 0 || curr_line_char_count > 0) {

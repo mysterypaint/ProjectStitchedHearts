@@ -58,7 +58,7 @@ if (((moving_bottom && !slide_in && tbox_y_offset >= 128) || (!moving_bottom && 
 }
 
 var _p_advance_text = Game.pressed_key_confirm;//device_mouse_check_button_pressed(0, mb_left); // Debug; Remap to what the game actually uses
-var _p_skip_text = max(Game.holding_key_cancel, 0);//device_mouse_check_button_pressed(0, mb_right); // Debug; Remap to what the game actually uses
+var _p_skip_text = max(Game.holding_key_cancel, Game.holding_key_run, 0);//device_mouse_check_button_pressed(0, mb_right); // Debug; Remap to what the game actually uses
 
 if (curr_loaded_line_count < loaded_text_line_count) {
 	if (new_line) { // Prepare to draw a totally new textbox

@@ -1,7 +1,4 @@
 function player_movement_code() {
-	move_x = -Game.holding_key_left + Game.holding_key_right;
-	move_y = -Game.holding_key_up + Game.holding_key_down;
-
 	// Determine the direction that the player should be facing toward
 	if (move_x == 1)
 		player_facing = Facing.RIGHT;
@@ -15,44 +12,130 @@ function player_movement_code() {
 
 	// Switch to the idle state if we're not moving anywhere; otherwise, set the image_speed so we can animate walking
 	if (move_y == 0 && move_x == 0) {
-		state = PStates.IDLE;
-		img_index = 1;
-		img_speed = 0;
+		if (instance_exists(RoomTransition) && RoomTransition.fade_state == 1) {
+			if (state == PStates.IDLE) {
+				state = PStates.MOVING;
+				img_index = 0;
+			}
+
+			// Update the player's trail buffer
+			update_player_trail_buffer();
+
+			// Set walking animation speed
+			img_speed = 0.1 * run_multiplier;
+		} else {
+			state = PStates.IDLE;
+			img_index = 1;
+			img_speed = 0;
+		}
 	} else {
 		if (state == PStates.IDLE) {
 			state = PStates.MOVING;
 			img_index = 0;
 		}
 
-		// Update the trail buffer
-		for (var i = ally_trail_buffer - 1; i > 0; i--) {
-		    trail_buffer_x[i] = trail_buffer_x[i-1];
-		    trail_buffer_y[i] = trail_buffer_y[i-1];
-			img_index_buffer[i] = img_index_buffer[i-1];
-			img_index_offset_buffer[i] = img_index_offset_buffer[i-1];
-		}
-	
-		// Store the player's current position at the front of the array
-		trail_buffer_x[0] = x;
-		trail_buffer_y[0] = y;
-		img_index_buffer[0] = img_index;
-		img_index_offset_buffer[0] = img_index_offset;
+		// Update the player's trail buffer
+		update_player_trail_buffer();
 
 		// Set walking animation speed
-		img_speed = 0.1;
+		img_speed = 0.1 * run_multiplier;
 	}
 
-	// Determine the speed the player should attempt to move by
-	hsp = move_x * move_speed;
-	vsp = move_y * move_speed;
 
-	// Handle collision detection
-	// TODO
+	if (!knocked_back) {
+		hsp = move_x * move_speed * run_multiplier;
+		vsp = move_y * move_speed * run_multiplier;
+	} else {
+		hsp *= 0.8;
+		vsp *= 0.8;
+	
+		if (abs(hsp) <= 0.5)
+			hsp = 0;
+		if (abs(vsp) <= 0.5)
+			vsp = 0;
+		if (hsp == 0 && vsp == 0)
+			knocked_back = false;
+	}
 
+	facing_x = 1;
+	facing_y = 1;
 
-	// Move the player
-	x += hsp;
-	y += vsp;
+	if (hsp != 0)
+		facing_x = sign(hsp);
+	if (vsp != 0)
+		facing_y = sign(vsp);
+
+	var _c_leniency = 3;
+
+	// Corner cutting (Horizontal)
+	if (Game.holding_key_up && move_x == 0) {
+	    if (position_meeting(bbox_right, bbox_top - _c_leniency, ParentSolid) && !position_meeting(bbox_left, bbox_top - _c_leniency, ParentSolid))
+			hsp -= 1; // bottom-left rounded corner
+	    else if (position_meeting(bbox_left, bbox_top - _c_leniency, ParentSolid) && !position_meeting(bbox_right, bbox_top - _c_leniency, ParentSolid))
+			hsp += 1; // bottom-right rounded corner
+	} else if (Game.holding_key_down && move_x == 0) {
+	    if (position_meeting(bbox_right, bbox_bottom + _c_leniency, ParentSolid) && !position_meeting(bbox_left, bbox_bottom + _c_leniency, ParentSolid))
+			hsp -= 1; // top-left rounded corner
+	    else if (position_meeting(bbox_left, bbox_bottom + _c_leniency, ParentSolid) && !position_meeting(bbox_right, bbox_bottom + _c_leniency, ParentSolid))
+			hsp += 1; // top-right rounded corner
+	}
+
+	// Corner cutting (Vertical) 
+	if (Game.holding_key_left && move_y == 0) {
+	    if (position_meeting(bbox_left - _c_leniency, bbox_bottom, ParentSolid) && !position_meeting(bbox_left - _c_leniency, bbox_top, ParentSolid))
+			vsp = -1; // top-left rounded corner
+	    else if (position_meeting(bbox_left - _c_leniency, bbox_top, ParentSolid) && !position_meeting(bbox_left - _c_leniency, bbox_bottom, ParentSolid))
+			vsp = 1; // bottom-left rounded corner
+	} else if (Game.holding_key_right && move_y == 0) {
+	    if (position_meeting(bbox_right + _c_leniency, bbox_bottom, ParentSolid) && !position_meeting(bbox_right + _c_leniency, bbox_top, ParentSolid))
+			vsp = -1; // top-right rounded corner
+	    else if (position_meeting(bbox_right + _c_leniency, bbox_top, ParentSolid) && !position_meeting(bbox_right + _c_leniency, bbox_bottom, ParentSolid))
+			vsp = 1; // bottom-right rounded corner
+	}
+
+	// Vertical
+	repeat(abs(vsp)) {
+		if (place_meeting(x, y + sign(vsp), ParentSolid)) { // Is pixel below occupied?
+			if (!place_meeting(x - 1, y + sign(vsp), ParentSolid)) // NOT pixel down and to the left
+				x--; // Move left ONCE
+			else if (!place_meeting(x + 1, y + sign(vsp), ParentSolid)) // NOT pixel down and to the right
+				x++; // Move right ONCE	
+			else if (!place_meeting(x - 2, y + sign(vsp), ParentSolid)) // Pixel down-left, NOT pixel down+2 left
+				x -= 2; // Move left TWICE
+			else if (!place_meeting(x + 2, y + sign(vsp), ParentSolid)) // Pixel down-right, NOT pixel down+2 right
+				x += 2; // Move right TWICE
+		
+		}
+		// Handle solid walls in general
+		if (!place_meeting(x, y + sign(vsp), ParentSolid))
+		    y += sign(vsp); 
+		else {
+		    vsp = 0;
+		    break;
+		}
+	}
+
+	// Horizontal
+
+	repeat(abs(hsp)) {
+		if (place_meeting(x + sign(hsp), y, ParentSolid)) { // Is pixel to the left/right occupied?
+			if (!place_meeting(x + sign(hsp), y - 1, ParentSolid)) // NOT pixel up and to the left/right
+				y--; // Move up ONCE
+			if (!place_meeting(x + sign(hsp), y + 1, ParentSolid)) // NOT pixel down and to the left/right
+				y++; // Move down ONCE
+			else if (!place_meeting(x + sign(hsp), y - 2, ParentSolid)) // Pixel 1 up, 1 left/right; NOT pixel 2 up + 1 left/right
+				y -= 2; // Move up TWICE
+			else if (!place_meeting(x + sign(hsp), y + 2, ParentSolid)) // Pixel 1 down, 1 left/right; NOT pixel 2 down + 1 left/right
+				y += 2; // Move down TWICE
+		}
+		// Handle solid walls in general
+	    if (!place_meeting(x + sign(hsp), y, ParentSolid))
+	        x += sign(hsp); 
+	    else {
+	        hsp = 0;
+	        break;
+	    }
+	}
 
 	// Handle animations
 	switch(player_facing) {
@@ -71,7 +154,24 @@ function player_movement_code() {
 			break;
 	}
 
+	// Allow the player to push the camera around
 	update_push_camera();
+
+	// Debug stuff
+	if (Game.debug) {
+		if (mouse_check_button(mb_left)) {
+			knocked_back = true;
+			var _dir = point_direction(Player.x, Player.y, mouse_x, mouse_y);
+			hsp = -lengthdir_x(10, _dir);
+			vsp = -lengthdir_y(10, _dir);
+		}
+
+		if (mouse_check_button(mb_right))
+		{
+		    x = round(mouse_x);
+		    y = round(mouse_y);
+		}
+	}
 
 
 }

@@ -1,17 +1,25 @@
 /// @description Player logic
 event_inherited();
 
-switch (state) {
-	case PStates.IDLE:
-		player_movement_code();
-		break;
-	case PStates.MOVING:
-		player_movement_code();
-		break;
+if (instance_exists(RoomTransition)) {
+	move_x = lock_move_x;
+	move_y = lock_move_y;
+	player_movement_code();
+} else {
+	switch (state) {
+		case PStates.IDLE:
+			player_get_input();
+			player_movement_code();
+			break;
+		case PStates.MOVING:
+			player_get_input();
+			player_movement_code();
+			break;
+	}
 }
 
-if (!instance_exists(Textbox))
-	if (Game.pressed_key_confirm)
-		create_textbox("Test1", 1, object_index, id); // Read from message1/message2/message3/message4 if this NPC isn't affected by cutscenes // instance_create_depth(Camera.x, Camera.y, -1, Textbox);
-
-img_index += img_speed;
+// Add a small delay between textbox triggers
+if (!instance_exists(Textbox)) {
+	if (talk_buffer > 0)
+		talk_buffer--;
+}
